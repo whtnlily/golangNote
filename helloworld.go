@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"errors"
 	"log" //log打印比fmt打印会打印出日期和时间
+	"reflect"
+	"strconv"
 	"time"
 	"unicode/utf8"
 )
@@ -30,97 +32,106 @@ var myWife [20]string
 
 var caim Wife
 
+const (
+	CBS = 83
+	PI = 3.1415926
+	AB  //不赋值，默认是继承上一项值3.1415926
+)
+
 //这种不带声明格式的只能在函数体中出现
 //g, h := 123, "hello"
 /**主函数*/
 func main() {
 	log.SetFlags(log.Ldate | log.Ltime | log.Lmicroseconds | log.Lshortfile)
-	wlist = []string{"hsn", "caim", "liut", "haowq", "xiaoy"}
 
-	/**/
-	log.Println("Hello World!")
-	printLine()
-
-	test()
-	printLine()
-
-	g, h := 123, "hello"
-	log.Println(x, y, a, b, c, d, e, f, g, h, config.PackageName)
-	log.Println(config.NetworkType, ",getNetworkType:", config.GetNetworkType())
-	log.Println("iota:", config.A, config.B, config.C, config.D, config.E, config.F, config.G, config.H, config.I)
-	log.Println("iota1:", config.J, config.K, config.L, config.M)
-	printLine()
-
-	pointTest()
-	printLine()
-
-	log.Println(wlist)
-	printLine()
-
-	wlistfor(wlist)
-	printLine()
-
-	//切片末尾增加元素
-	wlist = append(wlist, "zhanghj")
-	wlistfor(wlist)
-	printLine()
-
-	//在切片头增加元素
-	wlist = append([]string{"weiy"}, wlist...)
-	wlistfor(wlist)
-	printLine()
+	vartest()
 
 	pointPointTest()
-	printLine()
 
 	structTest()
-	printLine()
 
-	log.Println(Wife{"caim", 26, []int{115, 62, 120}, 9})
-	caim = Wife{"caimin", 26, []int{112, 60, 118}, 9}
-	log.Println(caim)
-	printLine()
-
-	log.Println(append(wlist, "zuoyq", "wenyj", "liliq", "zhouyp", "chenzy", "dingx"))
-	printLine()
-
-	log.Println(wlist[2:5]) //切片
-	printLine()
+	arraytest()
 
 	rangeTest()
-	printLine()
 
 	mapTest()
-	printLine()
 
-	log.Println(fibonacci(10))
-	log.Println("int->float32:", float32(16)/float32(3))
-	printLine()
+	funtest()
 
 	interfaceTest()
-	printLine()
 
 	structTest1()
-	printLine()
 
 	channelTest()
-	printLine()
 
 	channelTest1()
-	printLine()
 
 	chanTest()
-	printLine()
 
-	log.Println("中文字符串的个数:", utf8.RuneCountInString("中文字符串的个数"))
 	stringTest()
-	printLine()
 
 	slinceTest()
 
 	chanTimeout()
 
 	checkChannelIsFull()
+
+	checkType()
+
+	Defertest()
+
+	Timeout()
+
+	reflectest(caim)
+}
+
+func funtest() {
+	log.Println(fibonacci(10))
+	log.Println("int->float32:", float32(16)/float32(3))
+	printLine()
+}
+
+func arraytest() {
+	log.Println(Wife{"caim", 26, []int{115, 62, 120}, 9})
+	caim = Wife{"caimin", 26, []int{112, 60, 118}, 9}
+	log.Println(caim)
+	printLine()
+	log.Println(append(wlist, "zuoyq", "wenyj", "liliq", "zhouyp", "chenzy", "dingx"))
+	printLine()
+	log.Println(wlist[2:5])
+	//切片
+	printLine()
+
+}
+
+func vartest() {
+	log.Println("const default PI :", PI, ",AB:", AB)
+	printLine()
+	wlist = []string{"hsn", "caim", "liut", "haowq", "xiaoy"}
+	/**/
+	log.Println("Hello World!")
+	printLine()
+	test()
+	g, h := 123, "hello"
+	log.Println(x, y, a, b, c, d, e, f, g, h, config.PackageName)
+	log.Println(config.NetworkType, ",getNetworkType:", config.GetNetworkType())
+	log.Println("iota:", config.A, config.B, config.C, config.D, config.E, config.F, config.G, config.H, config.I)
+	log.Println("iota1:", config.J, config.K, config.L, config.M)
+	printLine()
+	pointTest()
+	printLine()
+	log.Println(wlist)
+	printLine()
+	wlistfor(wlist)
+	printLine()
+	//切片末尾增加元素
+	wlist = append(wlist, "zhanghj")
+	wlistfor(wlist)
+	printLine()
+	//在切片头增加元素
+	wlist = append([]string{"weiy"}, wlist...)
+	wlistfor(wlist)
+	printLine()
 }
 
 func structTest1() {
@@ -133,6 +144,7 @@ func structTest1() {
 	}
 	log.Println("wife liut info:", liutwife)
 	manager.AddWife(liutwife.Name, liutwife)
+	printLine()
 }
 
 /**：=赋值运算符*/
@@ -141,6 +153,7 @@ func test() {
 	name := "husn"
 	level := 9
 	log.Println("age =", age, ",name =", name, ",level =", level)
+	printLine()
 }
 
 /*指针*/
@@ -189,22 +202,23 @@ func pointPointTest() {
 	log.Printf("变量 a = %d\n", a)
 	log.Printf("指针变量 *ptr = %d\n", *ptr)
 	log.Printf("指向指针的指针变量 **pptr = %d\n", **pptr)
-
+	printLine()
 }
 
 /**结构体，可以看成java中的类*/
 type Wife struct {
-	name  string
-	age   int
-	sanw  []int
-	level int
+	Name  string
+	Age   int
+	Sanw  []int
+	Level int
 }
 
 /**结构体*/
 func structTest() {
 	myW := Wife{"husn", 30, []int{98, 60, 110}, 9}
 	log.Println(myW)
-	log.Println("husn sanw:", myW.sanw)
+	log.Println("husn sanw:", myW.Sanw)
+	printLine()
 }
 
 /**range测试，类似python中的in*/
@@ -213,6 +227,7 @@ func rangeTest() {
 	for i, wifi := range myWife {
 		log.Println("wifi", i, wifi)
 	}
+	printLine()
 }
 
 /**map集合*/
@@ -227,6 +242,7 @@ func mapTest() {
 	for name, level := range wifelist {
 		log.Println(name, level)
 	}
+	printLine()
 }
 
 /**递归函数*/
@@ -243,14 +259,19 @@ func fibonacci(n int) int {
 
 type Husn struct{}
 
+//(husn Husn)说明该方法是husn所有，
 func (husn Husn) MaL() {
 	log.Println("husn mal with wanht")
 }
 
-type Caim struct{}
+type Caim struct{
+	level int
+}
 
 func (caim Caim) MaL() {
 	log.Println("caim mal with wanht")
+	caim.level = 9
+	log.Println("caim level:",caim.level)
 }
 
 func (husn Husn) Merry() {
@@ -273,6 +294,8 @@ func interfaceTest() {
 	wife = new(Husn)
 	wife.Merry()
 	wife.MaL()
+
+	printLine()
 }
 
 /*
@@ -293,7 +316,7 @@ func channelTest() {
 	////log.Println(<-ch)
 	////data := <-ch
 	log.Println("channel test:", <-ch)
-
+	printLine()
 }
 
 /**channel管道*/
@@ -322,6 +345,7 @@ func channelTest1() {
 	close(ch)
 
 	log.Println("end channel")
+	printLine()
 }
 
 var cha = make(chan int)
@@ -340,9 +364,11 @@ func chanTest() {
 	for i := 0; i < 5; i++ {
 		log.Println(<-cha)
 	}
+	printLine()
 }
 
 func stringTest() {
+	log.Println("中文字符串的个数:", utf8.RuneCountInString("中文字符串的个数"))
 	title := "zhanghj"
 	sub := " ily"
 	thr := " ify"
@@ -359,7 +385,7 @@ func stringTest() {
 	var hj rune
 	hj = '惠'
 	log.Println("字符类型rune:", hj)
-
+	printLine()
 }
 
 func printLine() {
@@ -428,6 +454,95 @@ func checkChannelIsFull() {
 	case ch <- 2:
 	default: //因为 ch 插入 1 的时候已经满了， 当 ch 要插入 2 的时候，发现 ch 已经满了（case1 阻塞住）， 则 select 执行 default 语句。 这样就可以实现对 channel 是否已满的检测， 而不是一直等待。
 		log.Println("channel is full !")
+	}
+	printLine()
+}
+
+/**
+* 判断数据类型方法
+*/
+func checkType() {
+	Params := make([]interface{}, 3)
+	Params[0] = 88                   // 整型
+	Params[1] = "wanht lmf all"         // 字符串
+	Params[2] = Wife{Name:"xxx",Age:26,Sanw:[]int{126,73,88},Level:9} // 自定义结构体类型
+
+	// Comma-ok断言
+	for index, v := range Params {
+		if _, ok := v.(int); ok {
+			log.Printf("Params[%d] 是int类型 \n", index)
+		} else if _, ok := v.(string); ok {
+			log.Printf("Params[%d] 是字符串类型\n", index)
+		} else if _, ok := v.(Wife); ok {
+			log.Printf("Params[%d] 是自定义结构体类型\n", index)
+		} else {
+			log.Printf("list[%d] 未知类型\n", index)
+		}
+	}
+
+	printLine()
+	// switch判断
+	for index, v := range Params {
+		switch  value := v.(type) {
+		case int:
+			log.Printf("Params[%d] 是int类型, 值：%d \n", index,value)
+		case string:
+			log.Printf("Params[%d] 是字符串类型, 值：%s\n", index,value)
+		case Wife:
+			log.Printf("Params[%d] 是Wife类型, 值：%s\n", index, value.Name+","+strconv.Itoa(value.Age))
+		default:
+			log.Printf("list[%d] 未知类型\n", index)
+		}
+
+	}
+
+	printLine()
+}
+
+/**defer*/
+func Defertest() (i int) {
+	defer func() {
+		log.Println("defertest1 i:",i)
+		i++
+		log.Println("defertest2 i:",i)
+		printLine()
+	}()
+	return 1
+}
+
+func Timeout()  {
+	ch := make(chan int)
+	select {
+	case <-ch:
+	case <-time.After(time.Second*1):
+		log.Println("超时测试：超时了")
+	}
+	printLine()
+}
+
+/**反射*/
+func reflectest(mWife Wife)  {
+	//获取目标对象
+	t := reflect.TypeOf(mWife)
+	log.Println("<<<reflect t type,",t.Name())
+	//获取目标对象的值类型
+	v := reflect.ValueOf(mWife)
+	for i := 0;i < v.NumField();i++{
+		key := t.Field(i)
+		value := v.Field(i).Interface()
+		log.Println("<<<第",i+1,"个字段是：",key.Name,":",key.Type,"=",value)
+	}
+	printLine()
+
+	// 通过.Kind()来判断对比的值是否是struct类型
+	if k := t.Kind(); k == reflect.Struct {
+		log.Println("<<<struct类型判断")
+	}
+
+	num := 1;
+	numType := reflect.TypeOf(num)
+	if k := numType.Kind(); k == reflect.Int {
+		log.Println("<<<数值类型判断")
 	}
 	printLine()
 }
