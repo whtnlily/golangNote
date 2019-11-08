@@ -4,12 +4,16 @@ import (
 	"bytes"
 	"errors"
 	"log" //log打印比fmt打印会打印出日期和时间
+	"os"
 	"reflect"
+	"runtime"
 	"strconv"
+	"sync"
 	"time"
 	"unicode/utf8"
 )
 import "./common/config"
+import "./common"
 import "./winterface"
 import "./bean"
 import "./manager"
@@ -83,6 +87,12 @@ func main() {
 	Timeout()
 
 	reflectest(caim)
+
+	deferTest()
+
+	lockTest()
+
+	runnerTest()
 }
 
 func funtest() {
@@ -92,8 +102,8 @@ func funtest() {
 }
 
 func arraytest() {
-	log.Println(Wife{"caim", 26, []int{115, 62, 120}, 9})
-	caim = Wife{"caimin", 26, []int{112, 60, 118}, 9}
+	log.Println(Wife{"caim", 26, WifeSanw{115, 62, 120}, 9})
+	caim = Wife{"caimin", 26, WifeSanw{112, 60, 118}, 9}
 	log.Println(caim)
 	printLine()
 	log.Println(append(wlist, "zuoyq", "wenyj", "liliq", "zhouyp", "chenzy", "dingx"))
@@ -111,7 +121,7 @@ func vartest() {
 	/**/
 	log.Println("Hello World!")
 	printLine()
-	test()
+	test1()
 	g, h := 123, "hello"
 	log.Println(x, y, a, b, c, d, e, f, g, h, config.PackageName)
 	log.Println(config.NetworkType, ",getNetworkType:", config.GetNetworkType())
@@ -148,7 +158,7 @@ func structTest1() {
 }
 
 /**：=赋值运算符*/
-func test() {
+func test1() {
 	age = 26
 	name := "husn"
 	level := 9
@@ -209,13 +219,19 @@ func pointPointTest() {
 type Wife struct {
 	Name  string
 	Age   int
-	Sanw  []int
+	Sanw  WifeSanw
 	Level int
+}
+
+type WifeSanw struct {
+	Xiongw int
+	Yaow int
+	Tengw int
 }
 
 /**结构体*/
 func structTest() {
-	myW := Wife{"husn", 30, []int{98, 60, 110}, 9}
+	myW := Wife{"husn", 30, WifeSanw{98, 60, 110}, 9}
 	log.Println(myW)
 	log.Println("husn sanw:", myW.Sanw)
 	printLine()
@@ -232,16 +248,25 @@ func rangeTest() {
 
 /**map集合*/
 func mapTest() {
-	wifelist := make(map[string]float32)
-	wifelist["husn"] = 9.8
+	wifelist := make(map[string]float32) //map初始化
+	wifelist["husn"] = 9.8  //增
 	wifelist["caim"] = 9.2
 	wifelist["xiaoy"] = 7.8
 	wifelist["liut"] = 8
 
+	//delete(wifelist,"liut") //map删除
+
+	wifelist["xiaoy"] = 7.6  //修改
+
 	log.Println("map test :", wifelist)
-	for name, level := range wifelist {
+	for name, level := range wifelist {//map遍历
 		log.Println(name, level)
 	}
+
+	i := wifelist["husn"]    //查询
+	i1, ok := wifelist["caim"]  //查询
+	_, ok1 := wifelist["xiaoy"] //查询
+	log.Println("<<<map query i:",i,",i1:",i1,",ok:",ok,",ok1:",ok1)
 	printLine()
 }
 
@@ -315,7 +340,7 @@ func channelTest() {
 	//ch <- 3
 	////log.Println(<-ch)
 	////data := <-ch
-	log.Println("channel test:", <-ch)
+	log.Println("<<<channel test:", <-ch)
 	printLine()
 }
 
@@ -394,6 +419,7 @@ func printLine() {
 
 //切片用法
 func slinceTest() {
+	log.Println("<<<slinceTest")
 	log.Println("切片删除头元素1")
 	//删除元素,删除头元素
 	wlist = wlist[1:]
@@ -409,6 +435,9 @@ func slinceTest() {
 	wlist = wlist[:copy(wlist, wlist[1:])]
 	wlistfor(wlist)
 	printLine()
+	wlist = common.Add(wlist,"liulm")
+	wlistfor(wlist)
+	printLine()
 	//删除中间的元素::append第一个参数的的1代表要删除的元素
 }
 
@@ -418,6 +447,7 @@ func slinceTest() {
 * 3、超时的设计
  */
 func chanTimeout() {
+	log.Println("<<<chanTimeout")
 	timeout := make(chan bool, 1) //带缓冲，异步
 	go func() {
 		time.Sleep(3e9) // sleep 3 seconds
@@ -465,7 +495,7 @@ func checkType() {
 	Params := make([]interface{}, 3)
 	Params[0] = 88                   // 整型
 	Params[1] = "wanht lmf all"         // 字符串
-	Params[2] = Wife{Name:"xxx",Age:26,Sanw:[]int{126,73,88},Level:9} // 自定义结构体类型
+	Params[2] = Wife{Name:"xxx",Age:26,Sanw:WifeSanw{126,73,88},Level:9} // 自定义结构体类型
 
 	// Comma-ok断言
 	for index, v := range Params {
@@ -546,3 +576,107 @@ func reflectest(mWife Wife)  {
 	}
 	printLine()
 }
+
+func test(i *int) int {
+	return *i
+}
+
+func deferTest()  {
+	i := 1
+	// defer定义的时候test(&i)的值就已经定了，是1，后面就不会变了
+	defer log.Println("i1 ="  , test(&i))
+	i++
+
+	// defer定义的时候test(&i)的值就已经定了，是2，后面就不会变了
+	defer log.Println("i2 ="  , test(&i))
+
+	// defer定义的时候，i就已经确定了是一个指针类型，地址上的值变了，这里跟着变
+	defer func(i *int) {
+		log.Println("i3 ="  , *i)
+	}(&i)
+
+	// defer定义的时候i的值就已经定了，是2，后面就不会变了
+	defer func(i int) {
+		//defer 在定义的时候就定了
+		log.Println("i4 ="  , i)
+	}(i)
+
+	defer func() {
+		// 地址，所以后续跟着变
+		var c = &i
+		log.Println("i5 ="  , *c)
+	}()
+
+	// 执行了 i=11 后才调用，此时i值已是11
+	defer func() {
+		log.Println("i6 ="  , i)
+	}()
+
+	i = 11
+	printLine()
+}
+
+/**协程安全问题，锁*/
+func lockTest()  {
+	printLine()
+	wg.Add(2)
+	go incCount()
+	go incCount()
+	wg.Wait()
+	log.Println("<<<lockTest count:",count)
+	printLine()
+}
+
+var (
+	count int32 //需要保持安全的数据
+	wg    sync.WaitGroup  //主要是为了保证主协程在子协程执行完后再执行后续代码，否则子协程里面的打印可能看不到，因为主协程先执行完了。
+	mutex sync.Mutex  //锁
+)
+
+func incCount() {
+	defer wg.Done()
+	for i := 0; i < 2; i++ {
+		mutex.Lock()  //加锁
+		value := count
+		runtime.Gosched()
+		value++
+		count = value
+		mutex.Unlock()  //释放锁
+	}
+}
+
+/**
+例子非常简单，定义任务超时时间为3秒，添加3个生成的任务，每个任务都是打印一个正在执行哪个任务，然后休眠一段时间。
+调用r.Start()开始执行任务，如果一切都正常的话，返回nil，然后打印出...任务执行结束...，不过我们例子中，因为超时时间和任务的设定，结果是执行超时的。
+如果我们把超时时间改为4秒或者更多，就会打印...任务执行结束...。这里我们还可以测试另外一种系统中断情况，在终端里运行程序后，快速不停的按Ctrl + C，就可以看到执行者被中断的打印输出信息了。
+*/
+func runnerTest()  {
+	log.Println("...开始执行任务...")
+
+	timeout := 3 * time.Second
+	r := common.New(timeout)
+
+	r.Add(createTask(), createTask(), createTask())
+
+	if err:=r.Start();err!=nil{
+		switch err {
+		case common.ErrTimeOut:
+			log.Println(err)
+			os.Exit(1)
+		case common.ErrInterrupt:
+			log.Println(err)
+			os.Exit(2)
+		}
+	}
+	log.Println("...任务执行结束...")
+	printLine()
+}
+
+func createTask() func(int) {
+	return func(id int) {
+		log.Printf("正在执行任务%d", id)
+		time.Sleep(time.Duration(id)* time.Second)
+	}
+}
+
+
