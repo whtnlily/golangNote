@@ -18,6 +18,7 @@ import "./common"
 import "./winterface"
 import "./bean"
 import "./manager"
+import Tool "./common/tool"
 
 var age int
 var x, y int
@@ -79,6 +80,14 @@ func main() {
 
 	sortTest()
 
+	modeTest()
+
+	//===============================所有新加测试方法调用放在此线之前==================================================================================================
+	//===============================放在线程测试后面会导致测试log不打印：因为子线程还在执行，而主线程已经结束了==========================================================
+	threadTest()
+}
+
+func threadTest()  {
 	chanTimeout()
 
 	checkChannelIsFull()
@@ -96,7 +105,6 @@ func main() {
 	lockTest()
 
 	runnerTest()
-
 }
 
 func funtest() {
@@ -451,6 +459,7 @@ func slinceTest() {
 * 3、超时的设计
  */
 func chanTimeout() {
+	printLine()
 	log.Println("<<<chanTimeout")
 	timeout := make(chan bool, 1) //带缓冲，异步
 	go func() {
@@ -666,9 +675,11 @@ func runnerTest()  {
 		switch err {
 		case common.ErrTimeOut:
 			log.Println(err)
+			printLine()
 			os.Exit(1)
 		case common.ErrInterrupt:
 			log.Println(err)
+			printLine()
 			os.Exit(2)
 		}
 	}
@@ -719,4 +730,8 @@ func sortTest()  {
 	}
 
 	printLine()
+}
+
+func modeTest()  {
+	Tool.GetInstance().Test()
 }

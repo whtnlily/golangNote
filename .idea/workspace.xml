@@ -2,7 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="afdd6ea3-942c-4f5a-b750-3d15a6b2314f" name="Default Changelist" comment="增加行号打印">
+      <change afterPath="$PROJECT_DIR$/channelTest.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/common/tool/ToolUtils.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Golang知识图谱.xmind" beforeDir="false" afterPath="$PROJECT_DIR$/Golang知识图谱.xmind" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/helloworld.go" beforeDir="false" afterPath="$PROJECT_DIR$/helloworld.go" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -50,6 +53,7 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="E:\workspace\go\golangNote\common\Tool" />
       <recent name="E:\workspace\go\golangNote\test" />
     </key>
   </component>
@@ -65,7 +69,15 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Go Build.go build helloworld.go">
+  <component name="RunManager" selected="Go Build.go build channelTest.go">
+    <configuration name="go build channelTest.go" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+      <module name="go" />
+      <working_directory value="$PROJECT_DIR$/" />
+      <kind value="FILE" />
+      <filePath value="$PROJECT_DIR$/channelTest.go" />
+      <directory value="$PROJECT_DIR$/" />
+      <method v="2" />
+    </configuration>
     <configuration name="go build helloworld.go" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
       <module name="go" />
       <working_directory value="$PROJECT_DIR$/" />
@@ -105,6 +117,7 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Go Build.go build channelTest.go" />
         <item itemvalue="Go Build.go build helloworld.go" />
         <item itemvalue="Go Test.TestDefertest in helloworld_test.go" />
         <item itemvalue="Go Test.TestTimeout in helloworld_test.go" />
