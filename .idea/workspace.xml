@@ -2,11 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="afdd6ea3-942c-4f5a-b750-3d15a6b2314f" name="Default Changelist" comment="增加行号打印">
-      <change afterPath="$PROJECT_DIR$/channelTest.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/common/tool/ToolUtils.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Golang知识图谱.xmind" beforeDir="false" afterPath="$PROJECT_DIR$/Golang知识图谱.xmind" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/helloworld.go" beforeDir="false" afterPath="$PROJECT_DIR$/helloworld.go" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
